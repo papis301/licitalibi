@@ -3,6 +3,7 @@ session_start();
 $logged = isset($_SESSION['user_id']);
 $username = $_SESSION['username'] ?? '';
 $phone = $_SESSION['phone'] ?? '';
+$role = $_SESSION['role'] ?? '';
 ?>
 <!doctype html>
 <html lang="fr">
@@ -21,7 +22,11 @@ $phone = $_SESSION['phone'] ?? '';
 
     <p>
         <a href="post_ad.php">Poster une annonce</a> |
-        <a href="dashboard.php">Dashboard</a> |
+        <?php if($role === 'admin'): ?>
+            <a href="admin_dashboard.php">Dashboard Admin</a> |
+        <?php else: ?>
+            <a href="dashboard.php">Dashboard</a> |
+        <?php endif; ?>
         <a href="logout.php">Se déconnecter</a>
     </p>
 
