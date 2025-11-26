@@ -7,91 +7,96 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// --- Récupérer toutes les catégories ---
-$stmtCat = $pdo->query("SELECT * FROM categories ORDER BY name ASC");
-$categories = $stmtCat->fetchAll();
+// Récupérer catégories
+$stmtCat = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
+$categories = $stmtCat->fetchAll(PDO::FETCH_ASSOC);
 
+// Traitement du formulaire
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-$message = "";
+    $title = trim($_POST['title']);
+    $price = floatval($_POST['price']);
+    $category_id = intval($_POST['category_id']);
+    $description = trim($_POST['description']);
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if ($title !== '' && $price > 0 && $category_id > 0) {
 
-    $title = $_POST['title'];
-    $price = $_POST['price'];
-    $category_id = $_POST['category_id'];
-    $description = $_POST['description'];
-    $user_id = $_SESSION['user_id'];
+        // Insérer produit
+        $stmt = $pdo->prepare("INSERT INTO products (user_id, title, price, category_id, description)
+                               VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$_SESSION['user_id'], $title, $price, $category_id, $description]);
 
-    // Enregistrer le produit
-    $stmt = $pdo->prepare("INSERT INTO products (user_id, title, price, category, description) VALUES (?, ?, ?, ?, ?)");
-    $stmt->execute([$user_id, $title, $price, $category, $description]);
+        $product_id = $pdo->lastInsertId();
 
-    $product_id = $pdo->lastInsertId();
+        // Upload des photos
+        if (!empty($_FILES['photos']['name'][0])) {
+            $uploadDir = "uploads/";
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
 
-    // Gestion des photos multiples
-    if (!empty($_FILES['images']['name'][0])) {
+            foreach ($_FILES['photos']['name'] as $key => $filename) {
 
-        $count = count($_FILES['images']['name']);
+                if ($_FILES['photos']['error'][$key] === UPLOAD_ERR_OK) {
+                    $tmp = $_FILES['photos']['tmp_name'][$key];
+                    $newName = uniqid() . "_" . basename($filename);
+                    $destination = $uploadDir . $newName;
 
-        for ($i = 0; $i < $count; $i++) {
-
-            $tmp = $_FILES['images']['tmp_name'][$i];
-            $name = time() . "_" . rand(1000,9999) . "_" . $_FILES['images']['name'][$i];
-
-            $upload_path = "uploads/" . $name;
-
-            move_uploaded_file($tmp, $upload_path);
-
-            
-
-            $stmt = $pdo->prepare("INSERT INTO products (user_id, title, price, category_id, description) VALUES (?, ?, ?, ?, ?)");
-            $stmt->execute([$user_id, $title, $price, $category_id, $description]);
-
+                    if (move_uploaded_file($tmp, $destination)) {
+                        $stmtImg = $pdo->prepare("INSERT INTO product_images (product_id, image_path)
+                                                  VALUES (?, ?)");
+                        $stmtImg->execute([$product_id, $destination]);
+                    }
+                }
+            }
         }
-    }
 
-    $message = "Produit ajouté avec succès !";
+        header("Location: dashboard.php");
+        exit;
+    } else {
+        $error = "Veuillez remplir tous les champs correctement.";
+    }
 }
 ?>
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Ajouter un produit</title>
+  <meta charset="utf-8">
+  <title>Ajouter un produit - Auto Market</title>
 </head>
 <body>
+<h1>Ajouter un produit</h1>
 
-<h2>Ajouter un produit</h2>
+<?php if (!empty($error)): ?>
+    <p style="color:red;"><?= htmlspecialchars($error) ?></p>
+<?php endif; ?>
 
-<?php if ($message) echo "<p style='color:green'>$message</p>"; ?>
+<form action="" method="POST" enctype="multipart/form-data">
 
-<form method="POST" enctype="multipart/form-data">
-    <label>Titre :</label><br>
-    <input type="text" name="title" required><br><br>
+    <input type="text" name="title" placeholder="Nom du produit" required><br><br>
 
-    <label>Prix :</label><br>
-    <input type="number" name="price" step="0.01" required><br><br>
+    <input type="number" name="price" placeholder="Prix" step="0.01" required><br><br>
 
-    <div class="mb-3">
     <label>Catégorie :</label>
-        <select name="category_id" class="form-control" required>
-            <option value="">-- Choisir une catégorie --</option>
-            <?php foreach($categories as $cat): ?>
-                <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
-            <?php endforeach; ?>
-        </select>
-    </div>
+    <select name="category_id" required>
+        <option value="">-- Choisir une catégorie --</option>
+        <?php foreach ($categories as $cat): ?>
+            <option value="<?= $cat['id'] ?>">
+                <?= htmlspecialchars($cat['name']) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    <br><br>
 
+    <textarea name="description" placeholder="Description du produit" rows="4"></textarea><br><br>
 
-    <label>Description :</label><br>
-    <textarea name="description"></textarea><br><br>
-
-    <label>Photos (plusieurs) :</label><br>
-    <input type="file" name="images[]" multiple required><br><br>
+    <label>Photos du produit :</label><br>
+    <input type="file" name="photos[]" multiple accept="image/*"><br><br>
 
     <button type="submit">Ajouter</button>
 </form>
+
+<p><a href="dashboard.php">Retour au dashboard</a></p>
 
 </body>
 </html>

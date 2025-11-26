@@ -1,5 +1,7 @@
 <?php
 session_start();
+
+// Vérifier si l'utilisateur est connecté
 $logged = isset($_SESSION['user_id']);
 $username = $_SESSION['username'] ?? '';
 $phone = $_SESSION['phone'] ?? '';
@@ -22,7 +24,9 @@ $role = $_SESSION['role'] ?? '';
 
     <p>
         <a href="post_ad.php">Poster une annonce</a> |
-        <?php if($role === 'admin'): ?>
+        <?php 
+        // Si l'utilisateur est admin, afficher le lien admin_dashboard
+        if ($role === 'admin'): ?>
             <a href="admin_dashboard.php">Dashboard Admin</a> |
         <?php else: ?>
             <a href="dashboard.php">Dashboard</a> |

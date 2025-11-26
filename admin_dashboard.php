@@ -38,6 +38,14 @@ $total_solde = $pdo->query("SELECT SUM(solde) FROM users")->fetchColumn();
         <div class="col-md-3">
             <div class="card shadow-sm">
                 <div class="card-body">
+                    <p>Solde total</p>
+                    <a href="categories.php" class="btn btn-sm btn-primary">Gérer les catégories</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
                     <h3><?= number_format($total_solde,0,',',' ') ?> FCFA</h3>
                     <p>Solde total</p>
                     <a href="admin_users.php" class="btn btn-sm btn-primary">Modifier</a>

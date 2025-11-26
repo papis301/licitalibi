@@ -8,16 +8,15 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $stmt = $pdo->prepare("
-    SELECT p.*, c.name AS category_name,
-           (SELECT image_path FROM product_images WHERE product_id = p.id LIMIT 1) AS main_image
+    SELECT p.id, p.title, p.price, p.description, c.name AS category_name
     FROM products p
     LEFT JOIN categories c ON p.category_id = c.id
-    WHERE user_id = ?
+    WHERE p.user_id = ?
     ORDER BY p.id DESC
 ");
 $stmt->execute([$_SESSION['user_id']]);
+$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$products = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -51,7 +50,7 @@ $products = $stmt->fetchAll();
 
         <td><?= htmlspecialchars($p['title']) ?></td>
         <td><?= htmlspecialchars($p['price']) ?> FCFA</td>
-        <td><?= htmlspecialchars($p['category_name'] ?? 'Aucune') ?></td>
+        <?= htmlspecialchars($product['category_name']) ?>
 
         <td>
             <a href="edit_product.php?id=<?= $p['id'] ?>">Modifier</a>

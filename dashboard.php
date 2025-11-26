@@ -23,9 +23,11 @@ $total_images = $stmtImages->fetchColumn();
 // --- Liste des produits ---
 $stmt = $pdo->prepare("
     SELECT p.*, 
+           c.name AS category,
            (SELECT image_path FROM product_images WHERE product_id = p.id LIMIT 1) AS main_image
     FROM products p
-    WHERE user_id = ?
+    LEFT JOIN categories c ON p.category_id = c.id
+    WHERE p.user_id = ?
     ORDER BY p.id DESC
 ");
 $stmt->execute([$user_id]);

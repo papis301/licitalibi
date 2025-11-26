@@ -2,34 +2,34 @@
 session_start();
 require_once 'db.php';
 
-$errors = [];
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $phone = trim($_POST['phone'] ?? '');
-    $password = $_POST['password'] ?? '';
+    $phone = $_POST['phone'];
+    $password = $_POST['password'];
 
-    $phone_normalized = preg_replace('/[^\d+]/', '', $phone);
+    // Récupérer l'utilisateur
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE phone = ?");
+    $stmt->execute([$phone]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($phone_normalized === '' || $password === '') {
-        $errors[] = "Numéro et mot de passe requis.";
-    } else {
-        $stmt = $pdo->prepare('SELECT id, username, password FROM users WHERE phone = ? LIMIT 1');
-        $stmt->execute([$phone_normalized]);
-        $user = $stmt->fetch();
+    if ($user && password_verify($password, $user['password'])) {
 
-        if ($user && password_verify($password, $user['password'])) {
-            // Auth OK
-            session_regenerate_id(true);
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['phone'] = $phone_normalized;
+        // Stocker infos dans la session
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['phone'] = $user['phone'];
+        $_SESSION['role'] = $user['role']; // admin ou user
 
-            // Rediriger vers la page d'accueil (index.php)
-            header('Location: index.php');
+        // 🔁 Redirection selon le rôle
+        if ($user['role'] === 'admin') {
+            header("Location: admin_dashboard.php");
             exit;
         } else {
-            $errors[] = "Identifiants incorrects.";
+            header("Location: dashboard.php");
+            exit;
         }
+
+    } else {
+        echo "Numéro ou mot de passe incorrect.";
     }
 }
 ?>
