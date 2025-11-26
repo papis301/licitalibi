@@ -1,0 +1,57 @@
+# .gitignore pour projet PHP
+
+# Système d'exploitation
+.DS_Store
+Thumbs.db
+desktop.ini
+*~
+
+# Environnements / fichiers de configuration locaux
+.env
+.env.*.local
+.env.local
+.env.testing
+
+# Composer
+/vendor/
+composer.phar
+
+# Fichiers et caches PHP / outils
+.phpunit.result.cache
+.php_cs.cache
+*.cache
+cache/
+tmp/
+logs/
+*.log
+
+# Artefacts de build / distribution
+build/
+dist/
+
+# IDEs / éditeurs
+.idea/
+*.iml
+.vscode/
+nbproject/
+
+# Fichiers temporaires/éditeur
+*.swp
+*~
+*.bak
+
+# Fichiers binaires / exécutables
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Ignorer le dossier uploads (à la racine)
+uploads/
+
+# Si vous voulez ignorer uploads partout dans le repo, décommentez la ligne suivante et commentez la précédente :
+# **/uploads/
+
+# Si vous souhaitez conserver le dossier uploads vide dans le dépôt,
+# ajoutez un fichier uploads/.gitkeep et remplacez la ligne "uploads/" par :
+# !/uploads/.gitkeep
