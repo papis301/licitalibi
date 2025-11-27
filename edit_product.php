@@ -175,7 +175,7 @@ if (isset($_GET['delete_image'])) {
 
 <br><br>
 
-<a href="list_products.php">⬅ Retour à la liste</a>
+<a href="dashboard.php">⬅ Retour à la liste</a>
 
 </body>
 </html>

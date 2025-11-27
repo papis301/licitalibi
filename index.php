@@ -6,26 +6,16 @@ $logged = isset($_SESSION['user_id']);
 $username = $_SESSION['username'] ?? '';
 $role = $_SESSION['role'] ?? ''; // 'admin' ou 'user' (ou autre)
 
-$stmt = $pdo->prepare("
-    SELECT 
-        p.id, 
-        p.title, 
-        p.price, 
-        p.description, 
-        c.name AS category_name,
-        (SELECT image_path 
-         FROM product_images 
-         WHERE product_id = p.id 
-         ORDER BY id ASC 
-         LIMIT 1) AS main_image
+$stmt = $pdo->query("
+    SELECT p.id, p.title, p.price,
+    (SELECT image_path FROM product_images WHERE product_id = p.id LIMIT 1) AS main_image
     FROM products p
-    LEFT JOIN categories c ON p.category_id = c.id
-    WHERE p.user_id = ?
     ORDER BY p.id DESC
 ");
+$products = $stmt->fetchAll();
 
-$stmt->execute([$_SESSION['user_id']]);
-$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//$stmt->execute([$_SESSION['user_id']]);
+//$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 <!doctype html>
@@ -38,7 +28,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/menu/logo/logo-transparent-svg.svg">
 
     <!-- CSS
 	============================================ -->
@@ -101,252 +91,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <!-- Uren's Newsletter Popup Area Here -->
 
         <!-- Begin Uren's Header Main Area -->
-        <header class="header-main_area bg--sapphire">
-            <div class="header-top_area d-lg-block d-none">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-xl-7 col-lg-8">
-                            <div class="main-menu_area position-relative">
-                                <nav class="main-nav">
-                                    <ul>
-                                        <li class="dropdown-holder active"><a href="index.php">Accueil</a></li>
-                                    </ul>
-                                </nav>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-5 col-lg-4">
-                            <div class="ht-right_area">
-                                <div class="ht-menu">
-                                    <ul>
-                                        <?php if ($logged): ?>
-                                            <li>
-                                                <a href="javascript:void(0)">
-                                                    <span class="fa fa-user"></span>
-                                                    <span><?= htmlspecialchars($username, ENT_QUOTES, 'UTF-8') ?></span>
-                                                    <i class="fa fa-chevron-down"></i>
-                                                </a>
-                                                <ul class="ht-dropdown ht-my_account">
-                                                    <?php if ($role === 'admin'): ?>
-                                                        <li><a href="admin_dashboard.php">Dashboard Admin</a></li>
-                                                    <?php else: ?>
-                                                        <li><a href="dashboard.php">Mon espace</a></li>
-                                                    <?php endif; ?>
-                                                    <li><a href="logout.php">Se déconnecter</a></li>
-                                                </ul>
-                                            </li>
-                                        <?php else: ?>
-                                            <li><a href="login.php">Se connecter</a></li>
-                                            <li><a href="register.php">S'inscrire</a></li>
-                                        <?php endif; ?>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <div class="header-top_area header-sticky bg--sapphire">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-xl-8 col-lg-7 d-lg-block d-none">
-                            <div class="main-menu_area position-relative">
-                                <nav class="main-nav">
-                                    <ul>
-                                        
-                                        
-                                     
-                                        <li class=""><a href="index.php">Accueil </a>
-                                            
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
-                        </div>
-                        <div class="col-sm-3 d-block d-lg-none">
-                            <div class="header-logo_area header-sticky_logo">
-                                <a href="">
-                                    <img src="assets/images/menu/logo/1.png" alt="Uren's Logo">
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-xl-4 col-lg-5 col-sm-9">
-                            <div class="header-right_area">
-                                <ul>
-                                    <li class="mobile-menu_wrap d-flex d-lg-none">
-                                        <a href="#mobileMenu" class="mobile-menu_btn toolbar-btn color--white">
-                                            <i class="ion-navicon"></i>
-                                        </a>
-                                    </li>
-                                    
-                                    <li class="contact-us_wrap">
-                                        <a href="tel://+221766487420"><i class="ion-android-call"></i>+221 76 648 74 20</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="header-middle_area">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="custom-logo_col col-12">
-                            <div class="header-logo_area">
-                                <a href="">
-                                    <img src="assets/images/menu/logo/1.png" alt="Logo">
-                                </a>
-                            </div>
-                        </div>
-                        <div class="custom-category_col col-12">
-                            <div class="category-menu category-menu-hidden">
-                                <div class="category-heading">
-                                    <h2 class="categories-toggle">
-                                        <span>Shop By</span>
-                                        <span>Department</span>
-                                    </h2>
-                                </div>
-                                <div id="cate-toggle" class="category-menu-list">
-                                    <ul>
-                                        
-                                        <li class="right-menu"><a href="">Tools &amp; Accessories</a>
-                                            
-                                        </li>
-                                       
-                                        
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="custom-search_col col-12">
-                            <div class="hm-form_area">
-                                <form action="#" class="hm-searchbox">
-                                    <select class="nice-select select-search-category">
-                                        <option value="0">All Categories</option>
-                                        <option value="10">Laptops</option>
-                                    </select>
-                                    <input type="text" placeholder="Enter your search key ...">
-                                    <button class="header-search_btn" type="submit"><i
-                                        class="ion-ios-search-strong"><span>Search</span></i></button>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="custom-cart_col col-12">
-                            <div class="header-right_area">
-                                <ul>
-                                    <li class="mobile-menu_wrap d-flex d-lg-none">
-                                        <a href="#mobileMenu" class="mobile-menu_btn toolbar-btn color--white">
-                                            <i class="ion-navicon"></i>
-                                        </a>
-                                    </li>
-                                    
-                                    <li class="contact-us_wrap">
-                                        <a href="tel://+221766487420"><i class="ion-android-call"></i>+221 76 648 74 20</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="mobile-menu_wrapper" id="mobileMenu">
-                <div class="offcanvas-menu-inner">
-                    <div class="container">
-                        <a href="#" class="btn-close"><i class="ion-android-close"></i></a>
-                        <div class="offcanvas-inner_search">
-                            <form action="#" class="inner-searchbox">
-                                <input type="text" placeholder="Search for item...">
-                                <button class="search_btn" type="submit"><i class="ion-ios-search-strong"></i></button>
-                            </form>
-                        </div>
-                        <nav class="offcanvas-navigation">
-                            <ul class="mobile-menu">
-                                <li class="menu-item-has-children active"><a href=""><span
-                                        class="mm-text">Home</span></a>
-                                    <ul class="sub-menu">
-                                        <li>
-                                            <a href="">
-                                                <span class="mm-text">Home One</span>
-                                            </a>
-                                        </li>
-                                        
-                                    </ul>
-                                </li>
-                                
-                                <li class="menu-item-has-children">
-                                    <a href="">
-                                        <span class="mm-text">Blog</span>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li class="menu-item-has-children has-children">
-                                            <a href="">
-                                                <span class="mm-text">Grid View</span>
-                                            </a>
-                                           
-                                        </li>
-                                        <li class="menu-item-has-children has-children">
-                                            <a href="">
-                                                <span class="mm-text">List View</span>
-                                            </a>
-                                            
-                                        </li>
-                                        <li class="menu-item-has-children has-children">
-                                            <a href="">
-                                                <span class="mm-text">Blog Details</span>
-                                            </a>
-                                            
-                                        </li>
-                                        <li class="menu-item-has-children has-children">
-                                            <a href="">
-                                                <span class="mm-text">Blog Format</span>
-                                            </a>
-                                            
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item-has-children">
-                                    <a href="">
-                                        <span class="mm-text">Pages</span>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li>
-                                            <a href="">
-                                                <span class="mm-text">My Account</span>
-                                            </a>
-                                        </li>
-                                        
-                                    </ul>
-                                </li>
-                            </ul>
-                        </nav>
-                        <nav class="offcanvas-navigation user-setting_area">
-                            <ul class="mobile-menu">
-                                <li class="menu-item-has-children active"><a href="javascript:void(0)"><span
-                                        class="mm-text">User
-                                        Setting</span></a>
-                                    <ul class="sub-menu">
-                                        <li>
-                                            <a href="">
-                                                <span class="mm-text">My Account</span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="">
-                                                <span class="mm-text">Login | Register</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                
-                                
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </header>
+        <?php include 'inc/header.php'; ?>
         <!-- Uren's Header Main Area End Here -->
 
         <!-- Begin Popular Search Area 
@@ -470,7 +215,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="section-title_area">
-                            <h3>New Arrivals Products</h3>
+                            <h3> Produits</h3>
                         </div>
                         <div class="product-slider uren-slick-slider slider-navigation_style-1 img-hover-effect_area" data-slick-options='{
                         "slidesToShow": 6,
@@ -488,9 +233,12 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <div class="inner-slide">
                                     <div class="single-product">
                                         <div class="product-img">
-                                            <a href="">
+                                            <a href="product_detail.php?id=<?= $p['id'] ?>">
                                                 <?php if ($p['main_image']): ?>
-                                                    <img class="primary-img" src="<?= $p['main_image'] ?>" alt=" Product Image">
+                                                    <img class="primary-img" src="<?= $p['main_image'] ?>" alt=" Product Image" width="300" height="200"
+            style="display:block; width:300px; height:200px; object-fit:cover; object-position:center;"
+            loading="lazy">
+                                                    
                                                 <?php else: ?>
                                                     <span>Aucune image</span>
                                                 <?php endif; ?>
@@ -513,17 +261,17 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <div class="product-content">
                                             <div class="product-desc_info">
                                                 <div class="rating-box">
-                                                    <ul>
+                                                    <!--<ul>
                                                         <li><i class="ion-android-star"></i></li>
                                                         <li><i class="ion-android-star"></i></li>
                                                         <li><i class="ion-android-star"></i></li>
                                                         <li class="silver-color"><i class="ion-android-star"></i></li>
                                                         <li class="silver-color"><i class="ion-android-star"></i></li>
-                                                    </ul>
+                                                    </ul>-->
                                                 </div>
-                                                <h6><a class="product-name" href=""><?= htmlspecialchars($p['title']) ?></a></h6>
+                                                <h6><a class="product-name" href="product_detail.php?id=<?= $p['id'] ?>"><?= htmlspecialchars($p['title']) ?></a></h6>
                                                 <div class="price-box">
-                                                    <span class="new-price"><?= htmlspecialchars($p['price']) ?></span>
+                                                    <span class="new-price"><?= number_format($p['price'],0,',',' ') ?> FCFA</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -596,7 +344,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="uren-brand_area">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-12">
+                    <!--<div class="col-lg-12">
                         <div class="section-title_area">
                             <span>Top Quality Partner</span>
                             <h3>Shop By Brands</h3>
@@ -692,7 +440,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </div>
@@ -723,64 +471,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
             </div>-->
-            <div class="footer-middle_area">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <div class="footer-widgets_info">
-                                <div class="footer-widgets_logo">
-                                    <a href="#">
-                                        <img src="assets/images/menu/logo/licitalibi.png" alt=" Footer Logo">
-                                    </a>
-                                </div>
-                                
-                                <div class="widgets-essential_stuff">
-                                    <ul>
-                                        <li class="uren-address"><span>Addresse : </span>centenaire
-                                        Dakar - Sénégal</li>
-                                        <li class="uren-phone"><span>Appelle
-                                        SN:</span> <a href="tel://+221766487420">+221 76 648 74 20</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="uren-social_link">
-                                    <ul>
-                                        <li class="facebook">
-                                            <a href="https://www.facebook.com/" data-toggle="tooltip" target="_blank" title="Facebook">
-                                                <i class="fab fa-facebook"></i>
-                                            </a>
-                                        </li>
-                                        
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-8">
-                            <div class="footer-widgets_area">
-                                <div class="row">
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom_area">
-                <div class="container-fluid">
-                    <div class="footer-bottom_nav">
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6">
-                                <div class="copyright">
-                                    <span><a href="">Pisco Business</a></span>
-                                </div>
-
-                            </div>
-                           
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <?php include 'inc/footer.php'; ?>
         <!-- Uren's Footer Area End Here -->
         <!-- Begin Uren's Modal Area -->
         <div class="modal fade modal-wrapper" id="exampleModalCenter">
