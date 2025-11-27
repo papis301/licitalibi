@@ -7,12 +7,23 @@ $username = $_SESSION['username'] ?? '';
 $role = $_SESSION['role'] ?? ''; // 'admin' ou 'user' (ou autre)
 
 $stmt = $pdo->prepare("
-    SELECT p.id, p.title, p.price, p.description, c.name AS category_name
+    SELECT 
+        p.id, 
+        p.title, 
+        p.price, 
+        p.description, 
+        c.name AS category_name,
+        (SELECT image_path 
+         FROM product_images 
+         WHERE product_id = p.id 
+         ORDER BY id ASC 
+         LIMIT 1) AS main_image
     FROM products p
     LEFT JOIN categories c ON p.category_id = c.id
     WHERE p.user_id = ?
     ORDER BY p.id DESC
 ");
+
 $stmt->execute([$_SESSION['user_id']]);
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -486,7 +497,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             </a>
                                             
                                             <div class="add-actions">
-                                                <ul>
+                                                <!--<ul>
                                                     <li><a class="uren-add_cart" href="" data-toggle="tooltip" data-placement="top" title="Add To Cart"><i class="ion-bag"></i></a>
                                                     </li>
                                                     <li><a class="uren-wishlist" href="" data-toggle="tooltip" data-placement="top" title="Add To Wishlist"><i class="ion-android-favorite-outline"></i></a>
@@ -496,7 +507,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                     </li>
                                                     <li class="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Quick View"><i
                                                             class="ion-android-open"></i></a></li>
-                                                </ul>
+                                                </ul>-->
                                             </div>
                                         </div>
                                         <div class="product-content">
