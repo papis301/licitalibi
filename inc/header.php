@@ -101,14 +101,35 @@
                                 <div class="category-heading">
                                     <h2 class="categories-toggle">
                                         <span></span>
-                                        <span>Categories</span>
+                                        <span>Mon Compte</span>
                                     </h2>
                                 </div>
                                 <div id="cate-toggle" class="category-menu-list">
-                                    <!--<ul>
-                                        <li class="right-menu"><a href="">Tools &amp; Accessories</a>
-                                         </li>
-                                    </ul>-->
+                                    <ul>
+                                        
+                                        <?php if ($logged): ?>
+                                            <li>
+                                                <a href="javascript:void(0)">
+                                                    <span class="fa fa-user"></span>
+                                                    <span><?= htmlspecialchars($username, ENT_QUOTES, 'UTF-8') ?></span>
+                                                    <i class="fa fa-chevron-down"></i>
+                                                </a>
+                                                <ul class="ht-dropdown ht-my_account">
+                                                    <?php if ($role === 'admin'): ?>
+                                                        <li><a href="admin_dashboard.php">Dashboard Admin</a></li>
+                                                    <?php else: ?>
+                                                        <span class="fa fa-user"></span>
+                                                        <li><a href="dashboard.php"><span>Mon espace</span></a></li>
+                                                    <?php endif; ?>
+                                                    <span class="fa fa-user"></span>
+                                                    <li><a href="logout.php"><span>Se déconnecter</span></a></li>
+                                                </ul>
+                                            </li>
+                                        <?php else: ?>
+                                            <li><a href="login.php">Se connecter</a></li>
+                                            <li><a href="register.php">S'inscrire</a></li>
+                                        <?php endif; ?>
+                                    </ul>
                                 </div>
                             </div>
                         </div>

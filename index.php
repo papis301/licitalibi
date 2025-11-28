@@ -23,7 +23,7 @@ $products = $stmt->fetchAll();
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Uren - Car Accessories Shop HTML Template</title>
+    <title>li ci talibi Car Accessories </title>
     <meta name="robots" content="noindex, follow" />
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -144,7 +144,7 @@ $products = $stmt->fetchAll();
 
 
 
-        <!-- Begin Uren's Banner Area -->
+        <!-- Begin Uren's Banner Area 
         <div class="uren-banner_area ">
             <div class="container-fluid">
                 <div class="row">
@@ -177,9 +177,9 @@ $products = $stmt->fetchAll();
                 </div>
             </div>
         </div>
-        <!-- Uren's Banner Area End Here -->
+         Uren's Banner Area End Here -->
 
-        <!-- Begin Uren's Banner Two Area -->
+        <!-- Begin Uren's Banner Two Area 
         <div class="uren-banner_area uren-banner_area-2">
             <div class="container-fluid">
                 <div class="row">
@@ -207,86 +207,86 @@ $products = $stmt->fetchAll();
                 </div>
             </div>
         </div>
-        <!-- Uren's Banner Two Area End Here -->
+         Uren's Banner Two Area End Here -->
 
         <!-- Begin Uren's Product Area -->
-        <div class="uren-product_area">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="section-title_area">
-                            <h3> Produits</h3>
-                        </div>
-                        <div class="product-slider uren-slick-slider slider-navigation_style-1 img-hover-effect_area" data-slick-options='{
-                        "slidesToShow": 6,
-                        "arrows" : true
-                        }' data-slick-responsive='[
-                                                {"breakpoint":1501, "settings": {"slidesToShow": 4}},
-                                                {"breakpoint":1200, "settings": {"slidesToShow": 3}},
-                                                {"breakpoint":992, "settings": {"slidesToShow": 2}},
-                                                {"breakpoint":767, "settings": {"slidesToShow": 1}},
-                                                {"breakpoint":480, "settings": {"slidesToShow": 1}}
-                                            ]'>
+        
+<div class="shop-content_wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <!--<div class="shop-toolbar">
+                    <div class="product-view-mode">
+                        <a class="grid-1" data-target="gridview-1" title="1">1</a>
+                        <a class="grid-2" data-target="gridview-2" title="2">2</a>
+                        <a class="active grid-3" data-target="gridview-3" title="3">3</a>
+                        <a class="grid-4" data-target="gridview-4" title="4">4</a>
+                        <a class="grid-5" data-target="gridview-5" title="5">5</a>
+                        <a class="list" data-target="listview" title="List"><i class="fa fa-th-list"></i></a>
+                    </div>
+                </div>-->
+
+                <div class="shop-product-wrap grid gridview-3 listfullwidth img-hover-effect_area row">
+
                     <?php foreach ($products as $p): ?>
-                
+                        <div class="col-lg-4">
                             <div class="product-slide_item">
                                 <div class="inner-slide">
                                     <div class="single-product">
+
                                         <div class="product-img">
-                                            <a href="product_detail.php?id=<?= $p['id'] ?>">
-                                                <?php if ($p['main_image']): ?>
-                                                    <img class="primary-img" src="<?= $p['main_image'] ?>" alt=" Product Image" width="300" height="200"
-            style="display:block; width:300px; height:200px; object-fit:cover; object-position:center;"
-            loading="lazy">
-                                                    
-                                                <?php else: ?>
-                                                    <span>Aucune image</span>
-                                                <?php endif; ?>
+                                            <a href="product_detail.php?id=<?= $p['id']; ?>">
+                                                <img class="primary-img" src="<?= $p['main_image']; ?>" alt="<?= $p['title']; ?>" width="300" height="200"
+                                                    style="display:block; width:300px; height:200px; object-fit:cover; object-position:center;"
+                                                    loading="lazy">
+                                                <img class="secondary-img" src="<?= $p['main_image']; ?>" alt="<?= $p['title']; ?>"width="300" height="200"
+                                                    style="display:block; width:300px; height:200px; object-fit:cover; object-position:center;"
+                                                    loading="lazy">
                                             </a>
-                                            
+                                            <div class="sticker"><span class="sticker">New</span></div>
+
                                             <div class="add-actions">
-                                                <!--<ul>
-                                                    <li><a class="uren-add_cart" href="" data-toggle="tooltip" data-placement="top" title="Add To Cart"><i class="ion-bag"></i></a>
-                                                    </li>
-                                                    <li><a class="uren-wishlist" href="" data-toggle="tooltip" data-placement="top" title="Add To Wishlist"><i class="ion-android-favorite-outline"></i></a>
-                                                    </li>
-                                                    <li><a class="uren-add_compare" href="" data-toggle="tooltip" data-placement="top" title="Compare This Product"><i
-                                                            class="ion-android-options"></i></a>
-                                                    </li>
-                                                    <li class="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Quick View"><i
-                                                            class="ion-android-open"></i></a></li>
-                                                </ul>-->
+                                                <ul>
+                                                    <li><a class="uren-add_cart" href="#" title="Add To Cart"><i class="ion-bag"></i></a></li>
+                                                    <li><a class="uren-wishlist" href="#" title="Add To Wishlist"><i class="ion-android-favorite-outline"></i></a></li>
+                                                    <li><a class="uren-add_compare" href="#" title="Compare This Product"><i class="ion-android-options"></i></a></li>
+                                                    <li class="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><a href="#" title="Quick View"><i class="ion-android-open"></i></a></li>
+                                                </ul>
                                             </div>
                                         </div>
+
                                         <div class="product-content">
                                             <div class="product-desc_info">
-                                                <div class="rating-box">
-                                                    <!--<ul>
-                                                        <li><i class="ion-android-star"></i></li>
-                                                        <li><i class="ion-android-star"></i></li>
-                                                        <li><i class="ion-android-star"></i></li>
-                                                        <li class="silver-color"><i class="ion-android-star"></i></li>
-                                                        <li class="silver-color"><i class="ion-android-star"></i></li>
-                                                    </ul>-->
-                                                </div>
-                                                <h6><a class="product-name" href="product_detail.php?id=<?= $p['id'] ?>"><?= htmlspecialchars($p['title']) ?></a></h6>
+                                                <h6><a class="product-name" href="single-product_detail.php?id=<?= $p['id']; ?>"><?= $p['title']; ?></a></h6>
                                                 <div class="price-box">
-                                                    <span class="new-price"><?= number_format($p['price'],0,',',' ') ?> FCFA</span>
+                                                    <span class="new-price"><?= number_format($p['price'], 0, ',', ' '); ?> FCFA</span>
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
-                            
-                         <?php endforeach; ?>   
                         </div>
-                    </div>
+                    <?php endforeach; ?>
+
                 </div>
+
+                <!--<div class="uren-paginatoin-area">
+                    <ul class="uren-pagination-box primary-color">
+                        <li class="active"><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">Next</a></li>
+                    </ul>
+                </div>-->
+
             </div>
         </div>
-        <!-- Uren's Product Area End Here -->
-
+    </div>
+</div>
 
         <!-- Begin Uren's Banner Three Area 
         <div class="uren-banner_area uren-banner_area-3">

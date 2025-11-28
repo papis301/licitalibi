@@ -45,5 +45,5 @@ $deleteProduct = $pdo->prepare("DELETE FROM products WHERE id = ? AND user_id = 
 $deleteProduct->execute([$product_id, $_SESSION['user_id']]);
 
 // Redirection
-header("Location: list_products.php?deleted=1");
+header("Location: dashboard.php?deleted=1");
 exit;
